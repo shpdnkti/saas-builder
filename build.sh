@@ -53,7 +53,7 @@ parse_yaml () {
     }'
 }
 
-PYPI_INDEX_URL='http://mirrors.tencentyun.com/pypi/simple'
+PYPI_INDEX_URL=''
 RELEASE_VERSION='-1'
 IS_DOWNLOAD_PKGS=1
 APP_CODE=''
@@ -123,10 +123,6 @@ fi
 
 if [ "$RELEASE_VERSION" == '' ]; then
     err "--app-version: 版本号为空"
-fi
-
-if [ ! "$(curl -o /dev/null -s -w "%{http_code}\n" $PYPI_INDEX_URL)" -lt 400 ]; then
-    err "--pypi-index-url: $PYPI_INDEX_URL 无法访问"
 fi
 
 info "Install dependencies"
@@ -356,12 +352,15 @@ fi
 info "Upgrade / downgrade pip version to 20.2.3"
 ${PIP_PATH} install pip==20.2.3 | logstd 
 info "Download libraries"
+if [ -z "${PYPI_INDEX_URL}" ]; then
+    PIP_ARGS="--index-url ${PYPI_INDEX_URL} \
+    --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}') "
+else
+    PIP_ARGS=''
+fi
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
     ${PIP_PATH} download \
-        --index-url ${PYPI_INDEX_URL} \
-        --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}') \
-        --extra-index-url https://mirrors.cloud.tencent.com/pypi/simple \
-        --trusted-host mirrors.cloud.tencent.com \
+        "${PIP_ARGS}" \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
