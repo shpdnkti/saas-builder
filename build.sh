@@ -50,13 +50,12 @@ parse_yaml () {
     }'
 }
 
-PYPI_INDEX_URL=''
 RELEASE_VERSION='-1'
 IS_DOWNLOAD_PKGS=1
 APP_CODE=''
 ARG_NUM=$#
 [[ $ARG_NUM == 0 ]] && usage
-TEMP=$( getopt -o s:d:h --long help,source:,dest:,pypi-index-url:,do-not-download-pkgs,python2-home:,python3-home:,app-code:,app-version: -- "$@" 2>/dev/null )
+TEMP=$( getopt -o s:d:h --long help,source:,dest:,do-not-download-pkgs,python2-home:,python3-home:,app-code:,app-version: -- "$@" 2>/dev/null )
 if [ $? != 0 ]; then
     fail "Unknown argument!"
     usage
@@ -79,10 +78,6 @@ while :; do
         ;;    
         --app-version)
             RELEASE_VERSION=$2
-            shift 2
-        ;;
-        --pypi-index-url)
-            PYPI_INDEX_URL=$2
             shift 2
         ;;
         --python2-home)
@@ -347,14 +342,8 @@ fi
 info "Upgrade / downgrade pip version to 20.2.3"
 ${PIP_PATH} install pip==20.2.3 | logstd 
 info "Download libraries"
-if [ "${PYPI_INDEX_URL}" != '' ]; then
-    PIP_ARGS="--index-url ${PYPI_INDEX_URL} --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}')"
-else
-    PIP_ARGS=
-fi
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
-set -x 
-    ${PIP_PATH} download ${PIP_ARGS} \
+    ${PIP_PATH} download \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
@@ -365,7 +354,6 @@ else
         err "can not find pkgs dir"
     fi
 fi
-set +x
 
 mkdir -p $WORK_DIR/dist
 # export IS_DOWNLOAD_PKGS
