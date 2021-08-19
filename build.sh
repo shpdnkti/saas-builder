@@ -354,7 +354,7 @@ else
 fi
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
 set -x 
-    ${PIP_PATH} download "${PIP_ARGS}" \
+    ${PIP_PATH} download ${PIP_ARGS} \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
