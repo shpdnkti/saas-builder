@@ -25,7 +25,7 @@ IS_TRACE=${IS_TRACE:-false}
 [[ "$IS_TRACE" == "true" ]] && set -x
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-LOG_FILE=/var/log/saas_builder-$(date +%F-%s).log
+LOG_FILE=/tmp/saas_builder-$(date +%F-%s).log
 
 exec 2> >(trap '' INT; tee -a $LOG_FILE >&2)
 # shellcheck disable=SC2154
