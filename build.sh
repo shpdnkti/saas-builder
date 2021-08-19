@@ -341,7 +341,8 @@ else
 fi
 
 info "Building saas"
-mv $PROJECT_HOME $WORK_DIR/src
+cp -r $PROJECT_HOME/* $WORK_DIR/src
+rm -rf $PROJECT_HOME
 mkdir $WORK_DIR/$APP_CODE
 mv $WORK_DIR/src $WORK_DIR/$APP_CODE
 mv $WORK_DIR/$APP_CODE/src/app.yml $WORK_DIR/$APP_CODE
