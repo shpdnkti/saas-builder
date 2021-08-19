@@ -347,7 +347,7 @@ fi
 info "Upgrade / downgrade pip version to 20.2.3"
 ${PIP_PATH} install pip==20.2.3 | logstd 
 info "Download libraries"
-if [ -z "${PYPI_INDEX_URL}" ]; then
+if [ "${PYPI_INDEX_URL}" != '' ]; then
     PIP_ARGS="--index-url ${PYPI_INDEX_URL} \
     --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}') "
 else
