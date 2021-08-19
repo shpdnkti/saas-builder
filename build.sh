@@ -366,7 +366,7 @@ tar --owner=0 --group=0 -czf $WORK_DIR/dist/${PKG_NAME} ${APP_CODE} || err 'pack
 
 info "Sync file to dest path: $FILE_OUTPUT"
 mkdir -p $FILE_OUTPUT
-rsync -av --delete $WORK_DIR/dist/${PKG_NAME} $FILE_OUTPUT
+rsync -a --delete $WORK_DIR/dist/${PKG_NAME} $FILE_OUTPUT
 
 # clean up
 [[ "$IS_TRACE" == "true" ]] || rm -rf ${WORK_DIR}  
