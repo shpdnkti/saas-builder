@@ -350,7 +350,7 @@ info "Download libraries"
 if [ "${PYPI_INDEX_URL}" != '' ]; then
     PIP_ARGS="--index-url ${PYPI_INDEX_URL} --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}')"
 else
-    PIP_ARGS=''
+    PIP_ARGS=
 fi
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
 set -x 
