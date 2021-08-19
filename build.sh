@@ -348,14 +348,13 @@ info "Upgrade / downgrade pip version to 20.2.3"
 ${PIP_PATH} install pip==20.2.3 | logstd 
 info "Download libraries"
 if [ "${PYPI_INDEX_URL}" != '' ]; then
-    PIP_ARGS="--index-url ${PYPI_INDEX_URL} \
-    --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}') "
+    PIP_ARGS="--index-url ${PYPI_INDEX_URL} --trusted-host $(echo ${PYPI_INDEX_URL} | awk -F[/:] '{print $4}')"
 else
     PIP_ARGS=''
 fi
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
-    ${PIP_PATH} download \
-        "${PIP_ARGS}" \
+set -x 
+    ${PIP_PATH} download "${PIP_ARGS}" \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
@@ -366,6 +365,7 @@ else
         err "can not find pkgs dir"
     fi
 fi
+set +x
 
 mkdir -p $WORK_DIR/dist
 # export IS_DOWNLOAD_PKGS
