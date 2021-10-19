@@ -123,7 +123,7 @@ if apt-get -v &> /dev/null; then
     sudo apt-get update -qq
     sudo apt-get install -qq libmysqlclient-dev rsync
 elif which yum &> /dev/null; then
-    yum install -y -q mysql-devel gcc gcc-devel python-devel rsync
+    yum install -y -q mysql-devel gcc python3-devel rsync
 fi
 
 info "Start running. work dir: $WORK_DIR"
