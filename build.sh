@@ -153,9 +153,9 @@ info "Execute precheck items"
 if [ "$(find $WORK_DIR -maxdepth 2 -type f -name 'app.yml' | wc -l)" -eq 1 ]; then
     yaml_string=$(parse_yaml $(find $WORK_DIR -maxdepth 2 -type f -name 'app.yml'))
     eval "$yaml_string"
-    for var in "app_name is_use_celery author introduction version"; do
+    for var in "app_name is_use_celery author introduction version language date"; do
         if [ "$(eval echo \$$var)" == '' ]; then
-            err "app.yml 中缺少 $var "
+            err "app.yml 中缺少这个 key： $var "
         fi
     done
     if [ "$( echo $app_code | grep -P '^[a-z][a-z0-9-_]{1,16}$' )" == "$app_code" ]; then
