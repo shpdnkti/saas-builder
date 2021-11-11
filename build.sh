@@ -153,7 +153,7 @@ info "Execute precheck items"
 if [ "$(find $WORK_DIR -maxdepth 2 -type f -name 'app.yml' | wc -l)" -eq 1 ]; then
     yaml_string=$(parse_yaml $(find $WORK_DIR -maxdepth 2 -type f -name 'app.yml'))
     eval "$yaml_string"
-    for var in "app_name is_use_celery author introduction version language date"; do
+    for var in "app_name is_use_celery author introduction version language date introduction_en app_name_en"; do
         if [ "$(eval echo \$$var)" == '' ]; then
             err "app.yml 中缺少这个 key： $var "
         fi
