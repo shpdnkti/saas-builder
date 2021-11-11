@@ -216,7 +216,10 @@ fi
 info "Rewrite app.yml"
 # $PYTHON_PATH $SCRIPT_DIR/validate_and_rewrite_app_yml.py $PROJECT_HOME | logstd \
 #     || err "validate / rewrite app.yml fail"
-sed -i -r "s/^(version:).*/\1 ${APP_VERSION}/" $PROJECT_HOME/app.yml
+sed -i -r -e "s/^(version:).*/\1 ${APP_VERSION}/" \
+    -e "s/^(app_code:).*/\1 ${APP_CODE}/" \
+    -e "s/^(language:).*/\1 python/" \
+    -e "s/^(date:).*/\1 $(date +"%F %T")/"  $PROJECT_HOME/app.yml
 cat $PROJECT_HOME/requirements.txt | grep -vE '^#|^$' | xargs -n1 \
     | awk -F'==' 'BEGIN {printf "\nlibraries:\n"} {printf "- name: %s\n  version: %s\n",$1,$2}' >> $PROJECT_HOME/app.yml
 
