@@ -1,0 +1,63 @@
+name: Build BlueKing Smart SaaS
+
+on:
+  release:
+    types: [prereleased]
+env:
+  APP_CODE: bk_itsm
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Get the Version
+      id: verison
+      shell: bash
+      run: |
+        echo "VERSION=$(echo ${GITHUB_REF} | cut -d / -f 3)" >> $GITHUB_ENV
+        echo ::set-output name=VERSION::${VERSION}
+    
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    
+    - name: Build Frontend
+      id: build-frontend
+      shell: bash
+      run: | 
+        cd ${GITHUB_WORKSPACE}/frontend/
+        npm install
+        cd ${GITHUB_WORKSPACE}/frontend/
+        npm run build
+        cd ${GITHUB_WORKSPACE}/
+        mkdir -p /tmp/release
+        tar czf /tmp/release/${APP_CODE}_ui_V${VERSION}.tar.gz frontend
+        rm -rf frontend
+        md5sum /tmp/release/${APP_CODE}_ui_V${VERSION}.tar.gz | awk '{print $1}' >> /tmp/release/${APP_CODE}_ui_V${VERSION}.tar.gz.md5
+    - name: Setup Python
+      shell: bash
+      run: |
+        wget -c http://bkopen-1252002024.file.myqcloud.com/common/py36_e.tgz -O /opt/py.tgz
+        tar xf /opt/py.tgz -C /opt
+        [ -d '/opt/py36_e/bin' ] && echo "/opt/py36_e/bin" >> $GITHUB_PATH || exit 1
+    - name: Build SaaS
+      shell: bash
+      run: |
+        wget -c https://raw.githubusercontent.com/shpdnkti/saas-builder/main/build.sh -O /tmp/build.sh
+        chmod +x /tmp/build.sh
+        /tmp/build.sh -s ./ -d /tmp/release --python3-home /opt/py36_e/bin/python3 --app-code ${APP_CODE} --app-version ${VERSION}
+        md5sum /tmp/release/${APP_CODE}_V${VERSION}.tar.gz | awk '{print $1}' >> /tmp/release/${APP_CODE}_V${VERSION}.tar.gz.md5
+  
+    - name: Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.VERSION }}
+        files: /tmp/release/*
