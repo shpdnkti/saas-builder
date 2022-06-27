@@ -51,6 +51,11 @@ parse_yaml () {
     }'
 }
 
+# export arrays 
+## PIP_OPTIONS=("-p" "123")
+## BASH_ENV=<(declare -p PIP_OPTIONS)
+PIP_OPTIONS=${PIP_OPTIONS:-''}
+
 RELEASE_VERSION='-1'
 IS_DOWNLOAD_PKGS=1
 APP_CODE=''
@@ -347,6 +352,7 @@ ${PIP_PATH} install pip==20.2.3 | logstd
 info "Download libraries"
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
     ${PIP_PATH} download \
+        ${PIP_OPTIONS} \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
