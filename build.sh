@@ -4,18 +4,36 @@
 usage () {
     cat <<EOF
     
-$SCRIPT_DIR/$0 -s source -d dest -t [0|1|2] -U user-codes [-c] [-h]
-
 Flags:
-    -s, --source                 [必填] 源码，支持zip/tgz/源码目录
-    -d, --dest                   [必填] 输出路径
-    --app-code                   [可选] app code
-    --app-version                [可选] saas 版本号
-    --do-not-download-pkgs       [可选] 是否补全 python 依赖库
-    --pypi-index-url             [可选] pypi index url 
-    --python2-home               [可选] python2 路径
-    --python3-home               [可选] python3 路径
-    -h, --help                   [可选] 显示此页
+    -s, --source [PATH]          
+        [必填] 源码，支持zip/tgz/源码目录
+
+    -d, --dest [PATH]
+        [必填] 输出路径
+
+    --app-code app_code
+        app code
+
+    --app-version app_version
+        saas 版本号
+
+    --do-not-download-pkgs
+        不自动补全 python 依赖库，默认按 requirements.txt 补全 python 依赖库
+
+    --ignore-rsync-args
+        不使用项目的 .gitignore 来排除无用的文件，避免敏感信息、无用的文件外泄
+
+    --pypi-index-url http://pypy-index-urls
+        pypi index url 
+
+    --python2-home [PATH]
+        python2 路径
+
+    --python3-home [PATH]
+        python3 路径
+
+    -h, --help
+        显示此页
 
 EOF
 exit 1
