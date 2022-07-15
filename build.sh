@@ -56,7 +56,7 @@ IS_DOWNLOAD_PKGS=1
 APP_CODE=''
 ARG_NUM=$#
 [[ $ARG_NUM == 0 ]] && usage
-TEMP=$( getopt -o s:d:h --long help,source:,dest:,do-not-download-pkgs,python2-home:,python3-home:,app-code:,app-version: -- "$@" 2>/dev/null )
+TEMP=$( getopt -o s:d:h --long help,source:,dest:,do-not-download-pkgs,python2-home:,python3-home:,app-code:,app-version:,ignore-rsync-args -- "$@" 2>/dev/null )
 if [ $? != 0 ]; then
     fail "Unknown argument!"
     usage
@@ -93,6 +93,10 @@ while :; do
             IS_DOWNLOAD_PKGS=0
             shift
         ;;
+        --ignore-rsync-args)
+            IS_IGNORE_RSYNC_ARGS=0
+            shift
+        ;;        
         -h|--help)
             usage
             shift
@@ -141,8 +145,10 @@ case "X${FILE_MIMETYPE##*[/.-]}" in
         info "Copy source to work dir"
         [ -z "$APP_CODE" ] && err 'source 为目录时需要指定 --app-code'
         rsync_args=''
-        if [ -f $FILE_SOURCE/.gitignore ]; then
-            rsync_args="--exclude-from=$FILE_SOURCE/.gitignore"
+        if [ "$IS_IGNORE_RSYNC_ARGS" == '1' ]; then
+            if [ -f $FILE_SOURCE/.gitignore ]; then
+                rsync_args="--exclude-from=$FILE_SOURCE/.gitignore"
+            fi
         fi
         rsync -a ${rsync_args} --exclude '.git*' --exclude 'build.sh' $FILE_SOURCE $WORK_DIR/${APP_CODE}
     ;;
