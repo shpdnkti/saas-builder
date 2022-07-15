@@ -58,6 +58,7 @@ PIP_OPTIONS=${PIP_OPTIONS:-''}
 
 RELEASE_VERSION='-1'
 IS_DOWNLOAD_PKGS=1
+IS_IGNORE_RSYNC_ARGS=1
 APP_CODE=''
 ARG_NUM=$#
 [[ $ARG_NUM == 0 ]] && usage
@@ -96,6 +97,10 @@ while :; do
         ;;
         --do-not-download-pkgs)
             IS_DOWNLOAD_PKGS=0
+            shift
+        ;;
+        --ignore-rsync-args)
+            IS_IGNORE_RSYNC_ARGS=0
             shift
         ;;
         -h|--help)
@@ -146,8 +151,10 @@ case "X${FILE_MIMETYPE##*[/.-]}" in
         info "Copy source to work dir"
         [ -z "$APP_CODE" ] && err 'source 为目录时需要指定 --app-code'
         rsync_args=''
-        if [ -f $FILE_SOURCE/.gitignore ]; then
-            rsync_args="--exclude-from=$FILE_SOURCE/.gitignore"
+        if [ "$IS_IGNORE_RSYNC_ARGS" == '1' ]; then
+            if [ -f $FILE_SOURCE/.gitignore ]; then
+                rsync_args="--exclude-from=$FILE_SOURCE/.gitignore"
+            fi
         fi
         rsync -a ${rsync_args} --exclude '.git*' --exclude 'build.sh' $FILE_SOURCE $WORK_DIR/${APP_CODE}
     ;;
