@@ -238,8 +238,6 @@ if [ ! -e "$PYTHON_PATH" ]; then
 fi
 
 info "Rewrite app.yml"
-# $PYTHON_PATH $SCRIPT_DIR/validate_and_rewrite_app_yml.py $PROJECT_HOME | logstd \
-#     || err "validate / rewrite app.yml fail"
 sed -i -r -e "s/^(version:).*/\1 ${APP_VERSION}/" \
     -e "s/^(app_code:).*/\1 ${APP_CODE}/" \
     -e "s/^(language:).*/\1 python/" \
@@ -383,9 +381,6 @@ else
 fi
 
 mkdir -p $WORK_DIR/dist
-# export IS_DOWNLOAD_PKGS
-# $PYTHON3_PATH $SCRIPT_DIR/make_package.py $WORK_DIR/$APP_CODE $WORK_DIR/dist ${RELEASE_VERSION} ${PYTHON_PATH} ${PYPI_INDEX_URL} | logstd \
-#     || err "build saas fail"
 cd $WORK_DIR
 PKG_NAME="${APP_CODE}_V${APP_VERSION}.tar.gz"
 tar --owner=0 --group=0 -czf $WORK_DIR/dist/${PKG_NAME} ${APP_CODE} || err 'packing fail'
