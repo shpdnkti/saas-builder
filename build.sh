@@ -23,9 +23,6 @@ Flags:
     --ignore-rsync-args
         不使用项目的 .gitignore 来排除无用的文件，避免敏感信息、无用的文件外泄
 
-    --pypi-index-url http://pypy-index-urls
-        pypi index url 
-
     --python2-home [PATH]
         python2 路径
 
@@ -69,6 +66,11 @@ parse_yaml () {
     }'
 }
 
+# export arrays 
+## PIP_OPTIONS=("-p" "123")
+## BASH_ENV=<(declare -p PIP_OPTIONS)
+PIP_OPTIONS=${PIP_OPTIONS:-''}
+
 RELEASE_VERSION='-1'
 IS_DOWNLOAD_PKGS=1
 APP_CODE=''
@@ -94,7 +96,7 @@ while :; do
         --app-code)
             APP_CODE=$2
             shift 2
-        ;;    
+        ;;
         --app-version)
             RELEASE_VERSION=$2
             shift 2
@@ -114,7 +116,7 @@ while :; do
         --ignore-rsync-args)
             IS_IGNORE_RSYNC_ARGS=0
             shift
-        ;;        
+        ;;
         -h|--help)
             usage
             shift
@@ -365,10 +367,11 @@ if [ -f "$WORK_DIR/includefiles" ]; then
 fi
 
 info "Upgrade / downgrade pip version to 20.2.3"
-${PIP_PATH} install pip==20.2.3 | logstd 
+${PIP_PATH} ${PIP_OPTIONS} install pip==20.2.3 | logstd 
 info "Download libraries"
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
     ${PIP_PATH} download \
+        ${PIP_OPTIONS} \
         -r $PROJECT_HOME/src/requirements.txt \
         -d $PROJECT_HOME/pkgs/ 2>&1 | logstd \
         || err "pip download $PROJECT_HOME/src/requirements.txt fail" 
