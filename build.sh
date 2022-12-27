@@ -360,7 +360,7 @@ mkdir $WORK_DIR/$APP_CODE
 mv $WORK_DIR/src $WORK_DIR/$APP_CODE
 mv $WORK_DIR/$APP_CODE/src/app.yml $WORK_DIR/$APP_CODE
 if [ -f "$WORK_DIR/includefiles" ]; then
-    shopt -s nullglob
+    shopt -s nullglo
     cat $WORK_DIR/includefiles | xargs -n1 -I {} mv $WORK_DIR/{} $WORK_DIR/$APP_CODE/
     shopt -u nullglob
     rm -f $WORK_DIR/includefiles
@@ -379,7 +379,7 @@ else
     if [ -d $WORK_DIR/pkgs ]; then
         mv $WORK_DIR/pkgs $WORK_DIR/$APP_CODE
     else
-        err "can not find pkgs dir"
+        fail "未启用自动 python 库补全功能，同时未找到 pkgs，SaaS 部署时将无法通过，请注意。如需手动补全，请根据 requirements.txt 补全 python 依赖库，并放置在源码/pkgs 目录内"
     fi
 fi
 
