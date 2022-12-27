@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2086,SC2046
 
+export LC_ALL=en_US.UTF-8
+
 usage () {
     cat <<EOF
     
