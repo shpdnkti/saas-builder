@@ -247,7 +247,7 @@ sed -i -r -e "s/^(version:).*/\1 ${APP_VERSION}/" \
     -e "s/^(language:).*/\1 python/" \
     -e "s/^(date:).*/\1 $(date +"%F %T")/"  $PROJECT_HOME/app.yml
 cat $PROJECT_HOME/requirements.txt | grep -vE '^#|^$' | xargs -n1 \
-    | awk -F'==' 'BEGIN {printf "\nlibraries:\n"} {printf "- name: %s\n  version: %s\n",$1,$2}' >> $PROJECT_HOME/app.yml
+    | awk -F'==' 'BEGIN {printf "\nlibraries:\n"} {printf "- name: %s\n  version: '\''%s'\''\n",$1,$2}' >> $PROJECT_HOME/app.yml
 
 info "Sync settings templates"
 if [ -f "$PROJECT_HOME/settings.py" ]; then
