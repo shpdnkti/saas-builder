@@ -369,7 +369,9 @@ if [ -f "$WORK_DIR/includefiles" ]; then
 fi
 
 info "Upgrade / downgrade pip version to 20.2.3"
-${PIP_PATH} install ${PIP_OPTIONS} pip==20.2.3 | logstd 
+if [[ "$(${PIP_PATH} --version | awk '{print $2}')" != '20.2.3' ]]; then
+  ${PIP_PATH} install pip==20.2.3 | logstd 
+fi
 info "Download libraries"
 if [ "$IS_DOWNLOAD_PKGS" == '1' ]; then
     ${PIP_PATH} download \
